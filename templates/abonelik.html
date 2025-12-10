@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Özsoy System - VIP Paketler</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css');
+
+        /* MODERN DARK MODE */
+        body {
+            background: linear-gradient(135deg, #0f0f1a 0%, #1a1a2e 50%, #16213e 100%);
+            color: #e2e8f0;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, sans-serif;
+            min-height: 100vh;
+            margin: 0;
+            padding: 0;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Parçacık animasyonu arka plan */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background:
+                radial-gradient(circle at 20% 30%, rgba(255, 77, 255, 0.05) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(77, 121, 255, 0.05) 0%, transparent 50%),
+                radial-gradient(circle at 40% 80%, rgba(0, 255, 204, 0.05) 0%, transparent 50%);
+            z-index: -1;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* HEADER */
+        .dashboard-header {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 20px;
+            padding: 40px;
+            margin-bottom: 40px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            text-align: center;
+        }
+
+        .main-title {
+            font-size: 3.5rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, #ff4dff 0%, #4d79ff 50%, #00ffcc 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 15px;
+            line-height: 1.2;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            color: #94a3b8;
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        /* NAVIGATION */
+        .nav-buttons {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 16px 32px;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            outline: none;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #ff4dff 0%, #8a2be2 100%);
+            color: white;
+            box-shadow: 0 10px 25px rgba(255, 77, 255, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px rgba(255, 77, 255, 0.4);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.05);
+            color: #e2e8f0;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        /* PACKAGE CARDS */
+        .packages-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+
+        .package-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 20px;
+            padding: 35px;
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+        }
+
+        .package-card:hover {
+            transform: translateY(-10px);
+            border-color: rgba(255, 77, 255, 0.3);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+        }
+
+        .package-card.popular {
+            border: 2px solid #ff4dff;
+            transform: scale(1.05);
+        }
+
+        .package-card.popular:hover {
+            transform: scale(1.05) translateY(-10px);
+        }
+
+        .popular-badge {
+            position: absolute;
+            top: 20px;
+            right: -35px;
+            background: linear-gradient(135deg, #ff4dff 0%, #8a2be2 100%);
+            color: white;
+            padding: 8px 40px;
+            font-size: 14px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transform: rotate(45deg);
+        }
+
+        .package-icon {
+            font-size: 48px;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #ff4dff 0%, #4d79ff 50%, #00ffcc 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .package-name {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: white;
+            margin-bottom: 10px;
+        }
+
+        .package-description {
+            color: #94a3b8;
+            margin-bottom: 25px;
+            line-height: 1.6;
+        }
+
+        .package-price {
+            font-size: 2.5rem;
+            font-weight: 900;
+            color: #4dff88;
+            margin-bottom: 5px;
+        }
+
+        .package-period {
+            color: #94a3b8;
+            font-size: 1rem;
+            margin-bottom: 25px;
+        }
+
+        .features-list {
+            list-style: none;
+            padding: 0;
+            margin-bottom: 30px;
+        }
+
+        .features-list li {
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: #cbd5e1;
+        }
+
+        .features-list li:last-child {
+            border-bottom: none;
+        }
+
+        .feature-icon {
+            color: #4dff88;
+            font-size: 14px;
+        }
+
+        /* BUTTONS */
+        .buy-btn {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, #4d79ff 0%, #1a4dff 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .buy-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(77, 121, 255, 0.4);
+            background: linear-gradient(135deg, #5d89ff 0%, #2a5dff 100%);
+        }
+
+        .buy-btn.vip {
+            background: linear-gradient(135deg, #ff4dff 0%, #8a2be2 100%);
+        }
+
+        .buy-btn.vip:hover {
+            background: linear-gradient(135deg, #ff5dff 0%, #9a3cf2 100%);
+            box-shadow: 0 10px 25px rgba(255, 77, 255, 0.4);
+        }
+
+        /* COMPARISON TABLE */
+        .comparison-section {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 20px;
+            padding: 40px;
+            margin-bottom: 50px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+        }
+
+        .section-title {
+            font-size: 2rem;
+            font-weight: 800;
+            color: white;
+            margin-bottom: 30px;
+            text-align: center;
+            background: linear-gradient(135deg, #ff4dff 0%, #4d79ff 50%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .comparison-table thead {
+            background: rgba(255, 77, 255, 0.1);
+        }
+
+        .comparison-table th {
+            padding: 20px;
+            text-align: left;
+            font-weight: 600;
+            color: #ff4dff;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .comparison-table td {
+            padding: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            color: #cbd5e1;
+        }
+
+        .comparison-table tbody tr:hover {
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .check-icon {
+            color: #4dff88;
+            font-size: 18px;
+        }
+
+        .x-icon {
+            color: #ff4d4d;
+            font-size: 18px;
+        }
+
+        /* FOOTER */
+        .footer {
+            text-align: center;
+            padding: 40px 0;
+            color: #94a3b8;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .footer-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 20px;
+        }
+
+        .telegram-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: linear-gradient(135deg, #0088cc 0%, #005f8b 100%);
+            color: white;
+            padding: 15px 30px;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+        }
+
+        .telegram-link:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0, 136, 204, 0.3);
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            .main-title {
+                font-size: 2.5rem;
+            }
+
+            .packages-container {
+                grid-template-columns: 1fr;
+            }
+
+            .package-card.popular {
+                transform: none;
+            }
+
+            .package-card.popular:hover {
+                transform: translateY(-10px);
+            }
+
+            .nav-buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Navigation -->
+        <div class="nav-buttons">
+            <button onclick="window.location.href='/panel'" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i> Panele Dön
+            </button>
+            <button onclick="window.location.href='/logout'" class="btn btn-secondary">
+                <i class="fas fa-sign-out-alt"></i> Çıkış Yap
+            </button>
+        </div>
+
+        <!-- Header -->
+        <div class="dashboard-header">
+            <h1 class="main-title">ÖZSOY SYSTEM VIP PAKETLERİ</h1>
+            <p class="subtitle">
+                Premium özelliklerin kilidini açın! 40+ API'ye erişim, öncelikli destek
+                ve sınırsız sorgu imkanı ile profesyonel seviyeye yükselin.
+            </p>
+        </div>
+
+        <!-- Package Cards -->
+        <div class="packages-container">
+            <!-- Haftalık Paket -->
+            <div class="package-card">
+                <div class="package-icon">
+                    <i class="fas fa-rocket"></i>
+                </div>
+                <h2 class="package-name">Haftalık Deneme</h2>
+                <p class="package-description">
+                    VIP özellikleri 1 hafta boyunca test etmek için mükemmel başlangıç
+                </p>
+                <div class="package-price">₺99.90</div>
+                <div class="package-period">1 HAFTA</div>
+
+                <ul class="features-list">
+                    <li><i class="fas fa-check feature-icon"></i> Tüm VIP API'ler</li>
+                    <li><i class="fas fa-check feature-icon"></i> Günde 100 sorgu limiti</li>
+                    <li><i class="fas fa-check feature-icon"></i> Temel destek</li>
+                    <li><i class="fas fa-times feature-icon" style="color: #ff4d4d;"></i> Öncelikli destek</li>
+                    <li><i class="fas fa-times feature-icon" style="color: #ff4d4d;"></i> Sınırsız sorgu</li>
+                </ul>
+
+                <button class="buy-btn" onclick="openTelegram('haftalik')">
+                    <i class="fab fa-telegram"></i> SATIN AL - ₺99.90
+                </button>
+            </div>
+
+            <!-- Aylık Paket -->
+            <div class="package-card popular">
+                <div class="popular-badge">POPÜLER</div>
+                <div class="package-icon">
+                    <i class="fas fa-crown"></i>
+                </div>
+                <h2 class="package-name">Aylık VIP</h2>
+                <p class="package-description">
+                    En çok tercih edilen paket! Tüm özellikler ve ekonomik fiyat
+                </p>
+                <div class="package-price">₺299.90</div>
+                <div class="package-period">1 AY</div>
+
+                <ul class="features-list">
+                    <li><i class="fas fa-check feature-icon"></i> Tüm VIP API'ler</li>
+                    <li><i class="fas fa-check feature-icon"></i> Günde 500 sorgu limiti</li>
+                    <li><i class="fas fa-check feature-icon"></i> Öncelikli destek</li>
+                    <li><i class="fas fa-check feature-icon"></i> Hızlı API yanıt süresi</li>
+                    <li><i class="fas fa-times feature-icon" style="color: #ff4d4d;"></i> Sınırsız sorgu</li>
+                </ul>
+
+                <button class="buy-btn vip" onclick="openTelegram('aylik')">
+                    <i class="fas fa-bolt"></i> SATIN AL - ₺299.90
+                </button>
+            </div>
+
+            <!-- 3 Aylık Paket -->
+            <div class="package-card">
+                <div class="package-icon">
+                    <i class="fas fa-gem"></i>
+                </div>
+                <h2 class="package-name">3 Aylık Pro</h2>
+                <p class="package-description">
+                    Uzun süreli kullanıcılar için özel indirim! %15 tasarruf
+                </p>
+                <div class="package-price">₺799.90</div>
+                <div class="package-period">3 AY</div>
+
+                <ul class="features-list">
+                    <li><i class="fas fa-check feature-icon"></i> Tüm VIP API'ler</li>
+                    <li><i class="fas fa-check feature-icon"></i> Günde 1000 sorgu limiti</li>
+                    <li><i class="fas fa-check feature-icon"></i> 7/24 öncelikli destek</li>
+                    <li><i class="fas fa-check feature-icon"></i> Özel beta özellikleri</li>
+                    <li><i class="fas fa-check feature-icon"></i> Sınırsız sorgu (koşullu)</li>
+                </ul>
+
+                <button class="buy-btn" onclick="openTelegram('3aylik')">
+                    <i class="fas fa-star"></i> SATIN AL - ₺799.90
+                </button>
+            </div>
+
+            <!-- Yıllık Paket -->
+            <div class="package-card">
+                <div class="package-icon">
+                    <i class="fas fa-infinity"></i>
+                </div>
+                <h2 class="package-name">Yıllık Ultimate</h2>
+                <p class="package-description">
+                    En iyi değer! %35 tasarruf edin ve tüm premium özellikleri kullanın                                                                                 </p>
+                <div class="package-price">₺2,499.90</div>
+                <div class="package-period">1 YIL</div>
+
+                <ul class="features-list">
+                    <li><i class="fas fa-check feature-icon"></i> Tüm VIP API'ler</li>                                                                                      <li><i class="fas fa-check feature-icon"></i> Tamamen sınırsız sorgu</li>
+                    <li><i class="fas fa-check feature-icon"></i> 7/24 öncelikli destek</li>
+                    <li><i class="fas fa-check feature-icon"></i> Özel beta özellikleri</li>
+                    <li><i class="fas fa-check feature-icon"></i> Kişisel API desteği</li>                                                                              </ul>
+                                                                                                                                                                        <button class="buy-btn" onclick="openTelegram('yillik')">
+                    <i class="fas fa-gem"></i> SATIN AL - ₺2,499.90                                                                                                     </button>
+            </div>                                                                                                                                              </div>
+
+        <!-- Comparison Table -->
+        <div class="comparison-section">
+            <h2 class="section-title">PAKET KARŞILAŞTIRMA TABLOSU</h2>
+            <div style="overflow-x: auto;">                                                                                                                             <table class="comparison-table">
+                    <thead>                                                                                                                                                     <tr>
+                            <th>ÖZELLİKLER</th>                                                                                                                                     <th>Haftalık</th>
+                            <th>Aylık</th>                                                                                                                                          <th>3 Aylık</th>
+                            <th>Yıllık</th>                                                                                                                                     </tr>
+                    </thead>                                                                                                                                                <tbody>
+                        <tr>                                                                                                                                                        <td>VIP API Erişimi</td>
+                            <td><i class="fas fa-check check-icon"></i></td>                                                                                                        <td><i class="fas fa-check check-icon"></i></td>
+                            <td><i class="fas fa-check check-icon"></i></td>                                                                                                        <td><i class="fas fa-check check-icon"></i></td>
+                        </tr>                                                                                                                                                   <tr>
+                            <td>Günlük Sorgu Limiti</td>                                                                                                                            <td>100</td>
+                            <td>500</td>
+                            <td>1000</td>
+                            <td>Sınırsız</td>                                                                                                                                   </tr>
+                        <tr>
+                            <td>Öncelikli Destek</td>                                                                                                                               <td><i class="fas fa-times x-icon"></i></td>
+                            <td><i class="fas fa-check check-icon"></i></td>                                                                                                        <td><i class="fas fa-check check-icon"></i></td>
+                            <td><i class="fas fa-check check-icon"></i></td>                                                                                                    </tr>
+                        <tr>                                                                                                                                                        <td>7/24 Destek</td>
+                            <td><i class="fas fa-times x-icon"></i></td>                                                                                                            <td><i class="fas fa-times x-icon"></i></td>
+                            <td><i class="fas fa-check check-icon"></i></td>                                                                                                        <td><i class="fas fa-check check-icon"></i></td>
+                        </tr>                                                                                                                                                   <tr>
+                            <td>API Yanıt Süresi</td>                                                                                                                               <td>Standart</td>
+                            <td>Hızlı</td>
+                            <td>Çok Hızlı</td>
+                            <td>En Hızlı</td>
+                        </tr>
+                        <tr>
+                            <td>Beta Özellikleri</td>
+                            <td><i class="fas fa-times x-icon"></i></td>                                                                                                            <td><i class="fas fa-times x-icon"></i></td>
+                            <td><i class="fas fa-check check-icon"></i></td>
+                            <td><i class="fas fa-check check-icon"></i></td>
+                        </tr>                                                                                                                                                   <tr>
+                            <td>Kişisel API Desteği</td>                                                                                                                            <td><i class="fas fa-times x-icon"></i></td>
+                            <td><i class="fas fa-times x-icon"></i></td>                                                                                                            <td><i class="fas fa-times x-icon"></i></td>
+                            <td><i class="fas fa-check check-icon"></i></td>
+                        </tr>
+                        <tr>                                                                                                                                                        <td>Fiyat/Ay</td>
+                            <td>₺399.60</td>                                                                                                                                        <td>₺299.90</td>
+                            <td>₺266.63</td>                                                                                                                                        <td>₺208.32</td>
+                        </tr>
+                        <tr>
+                            <td>Tasarruf</td>                                                                                                                                       <td>-</td>
+                            <td>-</td>                                                                                                                                              <td>%15</td>
+                            <td>%35</td>                                                                                                                                        </tr>
+                    </tbody>                                                                                                                                            </table>
+            </div>                                                                                                                                              </div>
+                                                                                                                                                                <!-- Footer -->
+        <div class="footer">                                                                                                                                        <h3 class="footer-title">SATIN ALMA İŞLEMLERİ İÇİN</h3>
+            <p style="margin-bottom: 20px; color: #cbd5e1;">                                                                                                            Satın alma işlemleri için Telegram üzerinden yetkilimiz ile iletişime geçin.<br>
+                Aşağıdaki butona tıklayarak direkt iletişime geçebilirsiniz.
+            </p>
+
+            <a href="https://t.me/Satisyetkili" class="telegram-link" target="_blank">
+                <i class="fab fa-telegram"></i> @Satisyetkili ile İletişime Geç
+            </a>
+
+            <div style="margin-top: 30px; font-size: 14px; color: #64748b;">
+                <p><i class="fas fa-shield-alt"></i> Güvenli Ödeme • Anında Aktivasyon • 7/24 Destek</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Satın alma butonları için işlev
+        function openTelegram(paket) {
+            const paketAdlari = {
+                'haftalik': 'Haftalık VIP Paket (₺99.90)',
+                'aylik': 'Aylık VIP Paket (₺299.90)',
+                '3aylik': '3 Aylık Pro Paket (₺799.90)',
+                'yillik': 'Yıllık Ultimate Paket (₺2,499.90)'
+            };
+
+            const message = `Merhaba, ${paketAdlari[paket]} satın almak istiyorum. Kullanıcı ID: ${getUserId()}`;
+            const encodedMessage = encodeURIComponent(message);
+            const telegramUrl = `https://t.me/Satisyetkili?text=${encodedMessage}`;
+
+            window.open(telegramUrl, '_blank');
+
+            // Satın alma istatistiği
+            trackPurchase(paket);
+        }
+
+        // Kullanıcı ID'sini al (localStorage'dan veya backend'den)
+        function getUserId() {
+            // Önce localStorage'dan bak
+            const userData = localStorage.getItem('app_user');
+            if (userData) {
+                try {
+                    const user = JSON.parse(userData);
+                    return user.id || 'GUEST_' + Date.now().toString().slice(-6);
+                } catch (e) {
+                    return 'GUEST_' + Date.now().toString().slice(-6);
+                }
+            }
+
+            // Yoksa rastgele bir ID oluştur
+            return 'GUEST_' + Date.now().toString().slice(-6);
+        }
+
+        // Satın alma istatistiği (isteğe bağlı)
+        function trackPurchase(paket) {
+            console.log(`Satın alma denemesi: ${paket} paketi`);
+            // Burada analytics kodları eklenebilir
+        }
+
+        // Paket kartlarına hover efekti
+        document.addEventListener('DOMContentLoaded', function() {
+            const cards = document.querySelectorAll('.package-card');
+
+            cards.forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    if (!this.classList.contains('popular')) {
+                        this.style.borderColor = 'rgba(255, 77, 255, 0.3)';
+                    }
+                });
+
+                card.addEventListener('mouseleave', function() {
+                    if (!this.classList.contains('popular')) {
+                        this.style.borderColor = 'rgba(255, 255, 255, 0.08)';
+                    }
+                });
+            });
+
+            // Popüler paket animasyonu
+            const popularCard = document.querySelector('.package-card.popular');
+            if (popularCard) {
+                setInterval(() => {
+                    popularCard.style.boxShadow = '0 25px 50px rgba(255, 77, 255, 0.2)';
+                    setTimeout(() => {
+                        popularCard.style.boxShadow = '0 25px 50px rgba(0, 0, 0, 0.3)';
+                    }, 1000);
+                }, 2000);
+            }
+        });
+    </script>
+</body>
+</html>
