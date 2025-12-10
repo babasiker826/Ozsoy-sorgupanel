@@ -1,0 +1,1031 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ÖZSOY PANEL - Sorgu Sistemi</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+            color: white;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+            border-radius: 15px;
+            padding: 25px 30px;
+            margin-bottom: 25px;
+            border: 1px solid #475569;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .header h1 {
+            color: #fbbf24;
+            font-size: 28px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .header-info {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-top: 15px;
+        }
+
+        .info-badge {
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid #3b82f6;
+            border-radius: 10px;
+            padding: 10px 15px;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .search-form {
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+            border-radius: 15px;
+            padding: 25px 30px;
+            margin-bottom: 25px;
+            border: 1px solid #475569;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .form-title {
+            color: #fbbf24;
+            font-size: 22px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .api-info {
+            background: rgba(245, 158, 11, 0.1);
+            border: 1px solid #f59e0b;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .api-info span {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 5px 12px;
+            background: rgba(30, 41, 59, 0.6);
+            border-radius: 8px;
+        }
+
+        .input-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .input-group label {
+            color: #cbd5e1;
+            font-size: 14px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .input-group input, .input-group select {
+            background: rgba(15, 23, 42, 0.8);
+            border: 2px solid #475569;
+            border-radius: 10px;
+            padding: 14px 18px;
+            color: white;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+
+        .input-group input:focus, .input-group select:focus {
+            outline: none;
+            border-color: #f59e0b;
+            box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.1);
+        }
+
+        .button-group {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+
+        .btn {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            min-width: 150px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(245, 158, 11, 0.4);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #475569 0%, #334155 100%);
+            color: white;
+            border: 1px solid #64748b;
+        }
+
+        .btn-secondary:hover {
+            background: linear-gradient(135deg, #64748b 0%, #475569 100%);
+            transform: translateY(-2px);
+        }
+
+        .results-section {
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+            border-radius: 15px;
+            padding: 25px 30px;
+            border: 1px solid #475569;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        .results-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .results-title {
+            color: #fbbf24;
+            font-size: 22px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .results-count {
+            background: rgba(16, 185, 129, 0.2);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            color: #10b981;
+            border: 1px solid #10b981;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .table-container {
+            overflow-x: auto;
+            border-radius: 10px;
+            border: 1px solid #475569;
+            background: rgba(15, 23, 42, 0.6);
+            margin-top: 15px;
+            max-height: 600px;
+            overflow-y: auto;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 1200px;
+        }
+
+        .data-table thead {
+            background: linear-gradient(135deg, #334155 0%, #475569 100%);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .data-table th {
+            padding: 15px 12px;
+            text-align: left;
+            font-weight: 600;
+            color: #fbbf24;
+            border-bottom: 2px solid #64748b;
+            font-size: 14px;
+            white-space: nowrap;
+        }
+
+        .data-table tbody tr {
+            border-bottom: 1px solid #334155;
+            transition: background-color 0.2s ease;
+        }
+
+        .data-table tbody tr:nth-child(even) {
+            background: rgba(30, 41, 59, 0.3);
+        }
+
+        .data-table tbody tr:hover {
+            background: rgba(59, 130, 246, 0.15);
+        }
+
+        .data-table td {
+            padding: 12px;
+            color: #e2e8f0;
+            border-bottom: 1px solid #334155;
+            font-size: 14px;
+            vertical-align: middle;
+            word-break: break-word;
+            max-width: 200px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 40px;
+        }
+
+        .loading i {
+            font-size: 40px;
+            color: #f59e0b;
+            margin-bottom: 15px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .error-message {
+            display: none;
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid #ef4444;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .success-message {
+            display: none;
+            background: rgba(34, 197, 94, 0.1);
+            border: 1px solid #22c55e;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #94a3b8;
+        }
+
+        .raw-data {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 20px;
+            font-family: monospace;
+            white-space: pre-wrap;
+            word-break: break-all;
+            font-size: 13px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .raw-data-title {
+            color: #fbbf24;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        @media (max-width: 768px) {
+            .container { padding: 10px; }
+            .input-grid { grid-template-columns: 1fr; }
+            .button-group { flex-direction: column; }
+            .btn { width: 100%; }
+            .header-info { flex-direction: column; }
+            .api-info { flex-direction: column; align-items: flex-start; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-search"></i> ÖZSOY PANEL - Sorgu Sistemi</h1>
+            <div class="header-info">
+                <div class="info-badge">
+                    <i class="fas fa-key"></i>
+                    <span id="current-key"></span>
+                </div>
+                <div class="info-badge">
+                    <i class="fas fa-crown"></i>
+                    <span id="current-plan"></span>
+                </div>
+                <div class="info-badge">
+                    <i class="fas fa-user"></i>
+                    <span id="username"></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="search-form">
+            <div class="form-title">
+                <i class="fas fa-filter"></i>
+                SORGU PARAMETRELERİ
+            </div>
+            
+            <div class="api-info">
+                <span id="api-name">
+                    <i class="fas fa-cog"></i> API: <strong id="api-name-text"></strong>
+                </span>
+                <span id="api-plan">
+                    <i class="fas fa-tag"></i> Plan: <strong id="api-plan-text"></strong>
+                </span>
+                <span id="required-plan">
+                    <i class="fas fa-lock"></i> Gereken: <strong id="required-plan-text"></strong>
+                </span>
+            </div>
+            
+            <div class="input-grid" id="input-container">
+                <!-- Dynamic inputs will be added here -->
+            </div>
+            
+            <div class="button-group">
+                <button class="btn btn-primary" onclick="runQuery()">
+                    <i class="fas fa-search"></i> SORGULA
+                </button>
+                <button class="btn btn-secondary" onclick="clearForm()">
+                    <i class="fas fa-eraser"></i> TEMİZLE
+                </button>
+                <button class="btn btn-secondary" onclick="goBack()">
+                    <i class="fas fa-arrow-left"></i> GERİ DÖN
+                </button>
+            </div>
+        </div>
+
+        <div class="loading" id="loading">
+            <i class="fas fa-spinner"></i>
+            <p>Sorgu yapılıyor, lütfen bekleyin...</p>
+        </div>
+
+        <div class="error-message" id="error-message">
+            <i class="fas fa-exclamation-circle"></i>
+            <h3>Sorgu Hatası</h3>
+            <p id="error-text"></p>
+        </div>
+
+        <div class="success-message" id="success-message">
+            <i class="fas fa-check-circle"></i>
+            <h3>Sorgu Başarılı</h3>
+            <p id="success-text"></p>
+        </div>
+
+        <div class="results-section" id="results-section" style="display: none;">
+            <div class="results-header">
+                <div class="results-title">
+                    <i class="fas fa-table"></i>
+                    SORGU SONUÇLARI
+                </div>
+                <div class="results-count">
+                    <i class="fas fa-list"></i>
+                    <span id="result-count">0</span> kayıt
+                </div>
+            </div>
+
+            <div class="table-container">
+                <table class="data-table" id="results-table">
+                    <thead id="table-header">
+                        <!-- Dynamic headers will be added here -->
+                    </thead>
+                    <tbody id="table-body">
+                        <!-- Results will be added here -->
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="empty-state" id="empty-state">
+                <i class="fas fa-database"></i>
+                <h3>Sonuç bulunamadı</h3>
+                <p>Sorgu sonucu boş döndü.</p>
+            </div>
+
+            <div id="raw-data-container" style="display: none; margin-top: 20px;">
+                <div class="raw-data-title">
+                    <i class="fas fa-code"></i> Raw Veri Görünümü
+                </div>
+                <div class="raw-data" id="raw-data"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const apiId = urlParams.get('api') || 'tc';
+        let currentApiInfo = null;
+        let userPlan = 'free';
+        let isVip = false;
+
+        // API'ler ve parametreleri
+        const APIS_CONFIG = {
+            // FREE API'ler
+            'tc': { name: 'TC Sorgulama', plan: 'free', params: ['tc'] },
+            'yas': { name: 'Yaş Sorgulama', plan: 'free', params: ['tc'] },
+            'adsoyad': { name: 'Ad Soyad Sorgu', plan: 'free', params: ['ad', 'soyad'] },
+            
+            // VIP API'ler - TC gerekenler
+            'tcyeni': { name: 'TC Yeni Sorgu', plan: 'vip', params: ['tc'] },
+            'aile': { name: 'Aile Sorgulama', plan: 'vip', params: ['tc'] },
+            'sulale': { name: 'Sülale Sorgulama', plan: 'vip', params: ['tc'] },
+            'anne': { name: 'Anne Sorgulama', plan: 'vip', params: ['tc'] },
+            'baba': { name: 'Baba Sorgulama', plan: 'vip', params: ['tc'] },
+            'kardes': { name: 'Kardeş Sorgulama', plan: 'vip', params: ['tc'] },
+            'cocuk': { name: 'Çocuk Sorgulama', plan: 'vip', params: ['tc'] },
+            'cocuklar': { name: 'Çocuklar Sorgulama', plan: 'vip', params: ['tc'] },
+            'dede': { name: 'Dede Sorgulama', plan: 'vip', params: ['tc'] },
+            'nine': { name: 'Nine Sorgulama', plan: 'vip', params: ['tc'] },
+            'amca': { name: 'Amca Sorgulama', plan: 'vip', params: ['tc'] },
+            'dayi': { name: 'Dayı Sorgulama', plan: 'vip', params: ['tc'] },
+            'hala': { name: 'Hala Sorgulama', plan: 'vip', params: ['tc'] },
+            'teyze': { name: 'Teyze Sorgulama', plan: 'vip', params: ['tc'] },
+            'kuzen': { name: 'Kuzen Sorgulama', plan: 'vip', params: ['tc'] },
+            'yegen': { name: 'Yeğen Sorgulama', plan: 'vip', params: ['tc'] },
+            'tcgsm': { name: 'TC → GSM Sorgu', plan: 'vip', params: ['tc'] },
+            'adres': { name: 'Adres Sorgulama', plan: 'vip', params: ['tc'] },
+            'saglik': { name: 'Sağlık Bilgileri', plan: 'vip', params: [] },
+            'cinsiyet': { name: 'Cinsiyet Sorgulama', plan: 'vip', params: ['tc'] },
+            'din': { name: 'Din Sorgulama', plan: 'vip', params: ['tc'] },
+            'burc': { name: 'Burç Sorgulama', plan: 'vip', params: ['tc'] },
+            'medenihal': { name: 'Medeni Hal Sorgu', plan: 'vip', params: ['tc'] },
+            'dogumyeri': { name: 'Doğum Yeri Sorgu', plan: 'vip', params: ['tc'] },
+            'koy': { name: 'Köy Bilgisi Sorgu', plan: 'vip', params: ['tc'] },
+            'vergino': { name: 'Vergi No Sorgulama', plan: 'vip', params: ['tc'] },
+            'kimlikkayit': { name: 'Kimlik Kayıt Bilgisi', plan: 'vip', params: ['tc'] },
+            'tcplaka': { name: 'TC Plaka Sorgu', plan: 'vip', params: ['tc'] },
+            'yetimlik': { name: 'Yetimlik Bilgisi', plan: 'vip', params: ['babatc'] },
+            'yeniden': { name: 'Yeniden Sorgulama', plan: 'vip', params: ['tc'] },
+            'olumtarihi': { name: 'Ölüm Tarihi Sorgu', plan: 'vip', params: ['tc'] },
+            'kizliksoyad': { name: 'Kızlık Soyadı', plan: 'vip', params: ['tc'] },
+            'hikaye': { name: 'Hikaye Bilgisi', plan: 'vip', params: ['tc'] },
+            'sirano': { name: 'Sıra No Sorgu', plan: 'vip', params: ['tc'] },
+            'ayakno': { name: 'Ayak No Sorgu', plan: 'vip', params: ['tc'] },
+            'raw': { name: 'Raw Veri Sorgu', plan: 'vip', params: ['tc'] },
+            'vesika': { name: 'Vesika Sorgulama', plan: 'vip', params: ['tc'] },
+            'vesika_download': { name: 'Vesika İndirme', plan: 'vip', params: ['tc'] },
+            
+            // GSM gerekenler
+            'gsmyeni': { name: 'GSM Yeni Sorgu', plan: 'vip', params: ['gsm'] },
+            'gsmtc': { name: 'GSM → TC Sorgu', plan: 'vip', params: ['gsm'] },
+            'sms': { name: 'SMS Bilgisi', plan: 'vip', params: ['gsm'] },
+            'operator': { name: 'Operatör Sorgu', plan: 'vip', params: ['gsm'] },
+            
+            // Ad+Soyad gerekenler
+            'adyeni': { name: 'Ad Soyad Yeni Sorgu', plan: 'vip', params: ['ad', 'soyad'] },
+            'gunceladres': { name: 'Güncel Adres Sorgu', plan: 'vip', params: ['ad', 'soyad', 'tc'] },
+            'isyerisektoru': { name: 'İşyeri Sektörü', plan: 'vip', params: ['ad', 'soyad', 'tc'] },
+            'isegiristarihi': { name: 'İşe Giriş Tarihi', plan: 'vip', params: ['ad', 'soyad', 'tc'] },
+            'isyeriunvani': { name: 'İşyeri Ünvanı', plan: 'vip', params: ['ad', 'soyad', 'tc'] },
+            'yabanci': { name: 'Yabancı Sorgulama', plan: 'vip', params: ['ad', 'soyad'] },
+            
+            // IBAN gerekenler
+            'iban_dogrulama': { name: 'IBAN Doğrulama', plan: 'vip', params: ['iban'] },
+            'iban_sorgulama': { name: 'IBAN Sorgulama', plan: 'vip', params: ['iban'] },
+            
+            // Phishing API'leri
+            'instagram': { name: 'Instagram Phishing', plan: 'vip', params: ['token', 'id'] },
+            'facebook': { name: 'Facebook Phishing', plan: 'vip', params: ['token', 'id'] },
+            'netflix': { name: 'Netflix Phishing', plan: 'vip', params: ['token', 'id'] },
+            'tiktok': { name: 'TikTok Phishing', plan: 'vip', params: ['token', 'id'] },
+            'twitter': { name: 'Twitter Phishing', plan: 'vip', params: ['token', 'id'] },
+            'google': { name: 'Google Phishing', plan: 'vip', params: ['token', 'id'] },
+            'microsoft': { name: 'Microsoft Phishing', plan: 'vip', params: ['token', 'id'] },
+            'spotify': { name: 'Spotify Phishing', plan: 'vip', params: ['token', 'id'] },
+            
+            // İhbar API'leri
+            'jandarmaihbar': { name: 'Jandarma İhbar', plan: 'vip', params: ['adres', 'detay'] },
+            'egmihbar': { name: 'EGM İhbar', plan: 'vip', params: ['adres', 'detay'] },
+            'usomihbar': { name: 'USOM İhbar', plan: 'vip', params: ['adres', 'detay'] }
+        };
+
+        document.addEventListener('DOMContentLoaded', function() {
+            loadUserInfo();
+            createInputFields();
+        });
+
+        async function loadUserInfo() {
+            try {
+                const response = await fetch('/api/user');
+                const userData = await response.json();
+                
+                if (userData.logged_in) {
+                    document.getElementById('current-key').textContent = userData.key;
+                    document.getElementById('current-plan').textContent = userData.plan_name;
+                    document.getElementById('username').textContent = userData.username;
+                    
+                    userPlan = userData.plan;
+                    isVip = userData.is_vip;
+                } else {
+                    window.location.href = '/login';
+                }
+            } catch (error) {
+                console.error('Kullanıcı bilgisi alınamadı:', error);
+            }
+        }
+
+        function createInputFields() {
+            const container = document.getElementById('input-container');
+            container.innerHTML = '';
+            
+            // API bilgilerini al
+            currentApiInfo = APIS_CONFIG[apiId] || { name: 'Bilinmeyen API', plan: 'free', params: [] };
+            
+            // API bilgilerini göster
+            document.getElementById('api-name-text').textContent = currentApiInfo.name;
+            document.getElementById('api-plan-text').textContent = currentApiInfo.plan === 'vip' ? 'VIP' : 'ÜCRETSİZ';
+            document.getElementById('required-plan-text').textContent = currentApiInfo.plan === 'vip' ? 'VIP Üyelik' : 'Herkes';
+            
+            // Plan rengi
+            const apiPlanElement = document.getElementById('api-plan-text');
+            apiPlanElement.style.color = currentApiInfo.plan === 'vip' ? '#fbbf24' : '#10b981';
+            
+            // Parametreleri oluştur
+            const params = currentApiInfo.params;
+            
+            if (params.length === 0) {
+                // Parametresiz API'ler için (örn: saglik)
+                container.innerHTML = `
+                    <div class="input-group">
+                        <p style="color: #fbbf24; text-align: center; width: 100%; padding: 20px;">
+                            <i class="fas fa-info-circle"></i> Bu API için parametre gerekmiyor. Sorgu butonuna tıklayın.
+                        </p>
+                    </div>
+                `;
+                return;
+            }
+            
+            params.forEach(param => {
+                const inputGroup = document.createElement('div');
+                inputGroup.className = 'input-group';
+                
+                let label = param.toUpperCase();
+                let placeholder = '';
+                let maxLength = '';
+                let pattern = '';
+                
+                switch(param) {
+                    case 'tc':
+                        label = 'TC Kimlik No';
+                        placeholder = '11 haneli TC giriniz';
+                        maxLength = '11';
+                        pattern = '[0-9]*';
+                        break;
+                    case 'gsm':
+                        label = 'Telefon Numarası';
+                        placeholder = '10 haneli GSM (5XX XXX XX XX)';
+                        maxLength = '10';
+                        pattern = '[0-9]*';
+                        break;
+                    case 'ad':
+                        label = 'Ad';
+                        placeholder = 'İsim giriniz';
+                        break;
+                    case 'soyad':
+                        label = 'Soyad';
+                        placeholder = 'Soyisim giriniz';
+                        break;
+                    case 'iban':
+                        label = 'IBAN';
+                        placeholder = 'TRXX XXXX XXXX XXXX XXXX XXXX';
+                        break;
+                    case 'babatc':
+                        label = 'Baba TC';
+                        placeholder = 'Babanın TC kimlik numarası';
+                        maxLength = '11';
+                        pattern = '[0-9]*';
+                        break;
+                    case 'token':
+                        label = 'Token';
+                        placeholder = 'Token değeri';
+                        break;
+                    case 'id':
+                        label = 'ID';
+                        placeholder = 'ID değeri';
+                        break;
+                    case 'adres':
+                        label = 'Adres';
+                        placeholder = 'Adres bilgisi';
+                        break;
+                    case 'detay':
+                        label = 'Detay';
+                        placeholder = 'Detaylı açıklama';
+                        break;
+                }
+                
+                inputGroup.innerHTML = `
+                    <label>
+                        <i class="fas fa-${getParamIcon(param)}"></i>
+                        ${label}
+                    </label>
+                    <input 
+                        type="${param === 'gsm' || param === 'tc' || param === 'babatc' ? 'tel' : 'text'}" 
+                        id="${param}-input" 
+                        placeholder="${placeholder}"
+                        ${maxLength ? `maxlength="${maxLength}"` : ''}
+                        ${pattern ? `pattern="${pattern}"` : ''}
+                        required>
+                `;
+                
+                container.appendChild(inputGroup);
+            });
+        }
+
+        function getParamIcon(param) {
+            switch(param) {
+                case 'tc': return 'id-card';
+                case 'gsm': return 'phone';
+                case 'ad': return 'user';
+                case 'soyad': return 'user-tag';
+                case 'iban': return 'credit-card';
+                case 'babatc': return 'male';
+                case 'token': return 'key';
+                case 'id': return 'hashtag';
+                case 'adres': return 'map-marker-alt';
+                case 'detay': return 'info-circle';
+                default: return 'edit';
+            }
+        }
+
+        async function runQuery() {
+            // VIP API kontrolü
+            if (currentApiInfo.plan === 'vip' && !isVip) {
+                showError('Bu API için VIP üyelik gereklidir!', true);
+                return;
+            }
+
+            // Parametreleri topla
+            const params = {};
+            const inputErrors = [];
+            
+            currentApiInfo.params.forEach(param => {
+                const input = document.getElementById(`${param}-input`);
+                if (input) {
+                    const value = input.value.trim();
+                    
+                    // Validasyon
+                    if (param === 'tc' && value && !/^\d{11}$/.test(value)) {
+                        inputErrors.push('Geçerli bir TC numarası girin (11 haneli)');
+                    } else if (param === 'gsm' && value && !/^\d{10}$/.test(value)) {
+                        inputErrors.push('Geçerli bir GSM numarası girin (10 haneli)');
+                    } else if (param === 'babatc' && value && !/^\d{11}$/.test(value)) {
+                        inputErrors.push('Geçerli bir Baba TC numarası girin (11 haneli)');
+                    } else {
+                        params[param] = value;
+                    }
+                }
+            });
+            
+            if (inputErrors.length > 0) {
+                showError(inputErrors.join('<br>'));
+                return;
+            }
+
+            // Loading göster
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('results-section').style.display = 'none';
+            document.getElementById('error-message').style.display = 'none';
+            document.getElementById('success-message').style.display = 'none';
+            document.getElementById('raw-data-container').style.display = 'none';
+
+            try {
+                const response = await fetch('/api/sorgu', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ api: apiId, ...params })
+                });
+
+                const result = await response.json();
+                document.getElementById('loading').style.display = 'none';
+
+                if (result.success) {
+                    showSuccess('Sorgu başarılı!');
+                    displayResults(result.data);
+                } else {
+                    // VIP gerekli hatası mı kontrol et
+                    if (result.error && result.error.includes('VIP üyelik')) {
+                        showError(result.error, true);
+                    } else {
+                        showError(result.error || 'Sorgu başarısız!');
+                    }
+                }
+            } catch (error) {
+                document.getElementById('loading').style.display = 'none';
+                showError('Bağlantı hatası: ' + error.message);
+            }
+        }
+
+        function displayResults(data) {
+            const tableHeader = document.getElementById('table-header');
+            const tableBody = document.getElementById('table-body');
+            const resultCount = document.getElementById('result-count');
+            const emptyState = document.getElementById('empty-state');
+            const resultsSection = document.getElementById('results-section');
+            const rawDataContainer = document.getElementById('raw-data-container');
+            const rawDataElement = document.getElementById('raw-data');
+
+            // Temizle
+            tableHeader.innerHTML = '';
+            tableBody.innerHTML = '';
+            resultsSection.style.display = 'block';
+
+            // Raw veriyi göster
+            rawDataElement.textContent = JSON.stringify(data, null, 2);
+            rawDataContainer.style.display = 'block';
+
+            // Veri tipine göre işle
+            if (!data) {
+                showEmptyState();
+                return;
+            }
+
+            let items = [];
+            let headers = new Set();
+
+            // 1. VERİ TİPİNİ BELİRLE
+            if (Array.isArray(data)) {
+                // Array formatı
+                items = data;
+                if (items.length > 0) {
+                    // İlk item'dan header'ları al
+                    Object.keys(items[0]).forEach(key => headers.add(key));
+                }
+            } else if (typeof data === 'object' && data !== null) {
+                // Object formatı
+                items = [data];
+                Object.keys(data).forEach(key => headers.add(key));
+                
+                // Eğer data.data varsa ve array ise
+                if (data.data && Array.isArray(data.data)) {
+                    items = data.data;
+                    if (items.length > 0) {
+                        Object.keys(items[0]).forEach(key => headers.add(key));
+                    }
+                }
+            } else if (typeof data === 'string') {
+                // String formatı
+                tableBody.innerHTML = `
+                    <tr>
+                        <td colspan="1" style="text-align: center; padding: 40px; color: #fbbf24;">
+                            <i class="fas fa-info-circle fa-2x"></i>
+                            <div style="margin-top: 15px; font-size: 16px;">${data}</div>
+                        </td>
+                    </tr>
+                `;
+                tableHeader.innerHTML = '<tr><th>SONUÇ</th></tr>';
+                resultCount.textContent = '1';
+                emptyState.style.display = 'none';
+                return;
+            }
+
+            // 2. BOŞ VERİ KONTROLÜ
+            if (items.length === 0 || headers.size === 0) {
+                showEmptyState();
+                return;
+            }
+
+            emptyState.style.display = 'none';
+
+            // 3. TABLO HEADER'LARINI OLUŞTUR
+            const headerRow = document.createElement('tr');
+            headers.forEach(header => {
+                const th = document.createElement('th');
+                th.textContent = formatHeader(header);
+                headerRow.appendChild(th);
+            });
+            tableHeader.appendChild(headerRow);
+
+            // 4. TABLO SATIRLARINI OLUŞTUR
+            items.forEach(item => {
+                const tr = document.createElement('tr');
+                
+                headers.forEach(header => {
+                    const td = document.createElement('td');
+                    let value = item[header];
+                    
+                    if (value === null || value === undefined || value === '') {
+                        value = 'YOK';
+                        td.style.color = '#94a3b8';
+                        td.style.fontStyle = 'italic';
+                    } else {
+                        // Formatlama
+                        if (header.toLowerCase().includes('tc') && String(value).match(/^\d{11}$/)) {
+                            value = formatTC(value);
+                        } else if (header.toLowerCase().includes('gsm') && String(value).match(/^\d{10}$/)) {
+                            value = formatGSM(value);
+                        } else if (header.toLowerCase().includes('iban')) {
+                            value = formatIBAN(value);
+                        } else if (header.toLowerCase().includes('tarih') || header.toLowerCase().includes('date')) {
+                            value = formatDate(value);
+                        }
+                    }
+                    
+                    td.textContent = value;
+                    tr.appendChild(td);
+                });
+                
+                tableBody.appendChild(tr);
+            });
+
+            resultCount.textContent = items.length;
+        }
+
+        function formatHeader(header) {
+            const headerMap = {
+                'tc': 'TC',
+                'ad': 'AD',
+                'soyad': 'SOYAD',
+                'gsm': 'GSM',
+                'babaadi': 'BABA ADI',
+                'babatc': 'BABA TC',
+                'anneadi': 'ANNE ADI',
+                'annetc': 'ANNE TC',
+                'dogumtarihi': 'DOĞUM TARİHİ',
+                'dogumyeri': 'DOĞUM YERİ',
+                'cinsiyet': 'CİNSİYET',
+                'medenihal': 'MEDENİ HAL',
+                'adres': 'ADRES',
+                'vergino': 'VERGİ NO',
+                'koy': 'KÖY',
+                'din': 'DİN',
+                'burc': 'BURÇ',
+                'saglik': 'SAĞLIK'
+            };
+            
+            const lowerHeader = header.toLowerCase();
+            return headerMap[lowerHeader] || header.toUpperCase();
+        }
+
+        function formatTC(tc) {
+            const str = String(tc);
+            if (str.length === 11 && /^\d+$/.test(str)) {
+                return str.replace(/(\d{1})(\d{4})(\d{3})(\d{3})/, '$1 $2 $3 $4');
+            }
+            return tc;
+        }
+
+        function formatGSM(gsm) {
+            const str = String(gsm);
+            if (str.length === 10 && /^\d+$/.test(str)) {
+                return str.replace(/(\d{3})(\d{3})(\d{4})/, '$1 $2 $3');
+            }
+            return gsm;
+        }
+
+        function formatIBAN(iban) {
+            const str = String(iban).replace(/\s/g, '');
+            if (str.length > 4) {
+                return str.match(/.{1,4}/g).join(' ');
+            }
+            return iban;
+        }
+
+        function formatDate(date) {
+            if (!date) return date;
+            
+            // Tarih formatı dönüşümü
+            const dateStr = String(date);
+            
+            // ISO formatı (YYYY-MM-DD)
+            if (/^\d{4}-\d{2}-\d{2}/.test(dateStr)) {
+                return dateStr.split('T')[0];
+            }
+            
+            // Timestamp
+            if (/^\d+$/.test(dateStr)) {
+                const d = new Date(parseInt(dateStr));
+                return d.toLocaleDateString('tr-TR');
+            }
+            
+            return dateStr;
+        }
+
+        function showEmptyState() {
+            document.getElementById('empty-state').style.display = 'block';
+            document.getElementById('result-count').textContent = '0';
+            document.getElementById('table-header').innerHTML = '<tr><th>BİLGİ</th></tr>';
+            document.getElementById('table-body').innerHTML = `
+                <tr>
+                    <td style="text-align: center; color: #94a3b8; padding: 40px;">
+                        <i class="fas fa-database fa-2x"></i>
+                        <div style="margin-top: 15px;">Sorgu sonucu boş döndü</div>
+                    </td>
+                </tr>
+            `;
+        }
+
+        function clearForm() {
+            const inputs = document.querySelectorAll('input');
+            inputs.forEach(input => input.value = '');
+            
+            document.getElementById('results-section').style.display = 'none';
+            document.getElementById('error-message').style.display = 'none';
+            document.getElementById('success-message').style.display = 'none';
+            document.getElementById('raw-data-container').style.display = 'none';
+        }
+
+        function goBack() {
+            window.location.href = '/panel';
+        }
+
+        function showError(message, isVipError = false) {
+            document.getElementById('error-text').innerHTML = message;
+            document.getElementById('error-message').style.display = 'block';
+            document.getElementById('success-message').style.display = 'none';
+            
+            if (isVipError) {
+                // VIP hatasında abonelik sayfasına yönlendirme butonu ekle
+                const errorDiv = document.getElementById('error-message');
+                const vipButton = document.createElement('button');
+                vipButton.className = 'btn btn-primary';
+                vipButton.style.marginTop = '15px';
+                vipButton.innerHTML = '<i class="fas fa-crown"></i> ABONELİK SAYFASINA GİT';
+                vipButton.onclick = function() {
+                    window.location.href = '/abonelik.html';
+                };
+                
+                // Eğer zaten buton eklenmemişse ekle
+                if (!errorDiv.querySelector('.vip-redirect-btn')) {
+                    vipButton.classList.add('vip-redirect-btn');
+                    errorDiv.appendChild(vipButton);
+                }
+            }
+        }
+
+        function showSuccess(message) {
+            document.getElementById('success-text').textContent = message;
+            document.getElementById('success-message').style.display = 'block';
+            document.getElementById('error-message').style.display = 'none';
+        }
+
+        // Enter tuşu ile sorgula
+        document.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                const active = document.activeElement;
+                if (active.tagName === 'INPUT') {
+                    runQuery();
+                }
+            }
+        });
+
+        // İlk inputa focus
+        setTimeout(() => {
+            const firstInput = document.querySelector('input');
+            if (firstInput) firstInput.focus();
+        }, 100);
+    </script>
+</body>
+</html>
