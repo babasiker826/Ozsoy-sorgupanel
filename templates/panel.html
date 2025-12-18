@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="preload" as="video" href="https://files.catbox.moe/oz9ls2.mp4" type="video/mp4" media="(min-width: 460px)">
+<title>ÖZSOY Panel</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+
+body {
+  margin: 0;
+}
+
+#top-bar {
+  display: flex;
+  align-items: center;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background-color: #808080;
+  height: 65px;
+  padding: 0 20px;
+  z-index: 1000;
+  box-sizing: border-box;
+}
+
+#top-bar img {
+  height: 100%;
+  object-fit: contain;
+  margin-right: 10px;
+}
+
+#top-bar span {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #333;
+  text-transform: uppercase;
+}
+
+body > *:not(#top-bar):not(.menu-button) {
+  margin-top: 65px;
+}
+
+#bg-video {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  object-fit: cover;
+  z-index: -1;
+}
+
+ body::before {
+   content: "ÖZSOY PANELE HOSGELDİNİZ";
+
+   position: absolute;
+   top: 160px;
+   left: 50%;
+   transform: translateX(-50%);
+
+   width: min(90vw, 900px);
+   height: auto;
+
+   background: #ffffff;
+   color: #000000;
+
+   font-size: clamp(16px, 2vw, 24px);
+   padding: 24px;
+
+   display: flex;
+   align-items: center;
+   justify-content: center;
+
+   border-radius: 16px;
+   z-index: 5000;
+ }
+
+ body {
+   margin: 0;
+   min-height: 100vh;
+   overflow: auto;
+ }
+
+html, body {
+  max-width: 100%;
+  overflow-x: hidden;
+  overscroll-behavior-x: none;
+}
+
+#sidebar {
+  padding-bottom: 240px;
+  touch-action: pan-y;
+  overscroll-behavior: contain;
+  width: 200px;
+  background: #000;
+  position: fixed;
+  top: 0rem;
+  left: -200px;
+  height: calc(100vh - 0rem);
+  z-index: 9999;
+  transition: left 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow-y: auto;
+  border-right: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+#sidebar.active {
+  left: 0;
+}
+
+@media (min-width: 1000px) {
+  #sidebar {
+    left: 0;
+  }
+}
+
+#top-bar {
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+#sidebar.active ~ #top-bar {
+  transform: translateX(200px);
+}
+
+:root {
+    --card-scale: 0.75;
+    --card-width: 260px;
+    --card-height: 96px;
+    --card-bg: #ccc;
+    --card-padding: 20px;
+    --card-border-radius: 0px;
+    --card-left: 0px;
+    --card-top: 0px;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    min-height: 100vh;
+    margin: 0;
+    background-color: transparent;
+    overflow-x: hidden;
+}
+
+.menu-header {
+    width: var(--card-width);
+    height: var(--card-height);
+    background-color: var(--card-bg);
+    border-radius: var(--card-border-radius);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    padding: var(--card-padding);
+    display: flex;
+    align-items: center;
+    transform: scale(var(--card-scale));
+    transform-origin: top left;
+}
+
+.menu-image {
+    width: 72px;
+    height: 72px;
+    margin-right: 10px;
+    flex-shrink: 0;
+}
+
+.menu-image img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #888;
+    cursor: pointer;
+}
+
+.menu-image input[type="file"] {
+    display: none;
+}
+
+.profile-info {
+    flex: 1;
+}
+
+.profile-info h2 {
+    margin: 0;
+    font-size: 1.2rem;
+    display: flex;
+    align-items: center;
+    color: #000000;
+}
+
+.verification .checkmark {
+    color: #3498db;
+    font-weight: bold;
+    margin-left: 5px;
+}
+
+.profile-info p {
+    margin: 5px 0;
+    font-size: 0.9rem;
+    color: #000000
+}
+
+.status {
+    display: inline-block;
+    padding: 3px 8px;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    color: #fff;
+    background: linear-gradient(135deg, #16a34a, #22c55e);
+}
+
+
+ .menu-button {
+     position: fixed;
+     top: 0.5rem;
+     right: 0.5rem;
+     width: 44px;
+     height: 44px;
+     background: linear-gradient(145deg, #020617, #0f172a);
+     box-shadow: 0 6px 18px rgba(0,0,0,0.6);
+     border: 1px solid rgba(255, 255, 255, 0.35);
+     border-radius: 12px;
+     color: white;
+     font-size: 18px;
+     cursor: pointer;
+     z-index: 2147483647;
+     display: flex;
+     align-items: center;
+     justify-content: center;
+     transition: transform .18s;
+ }
+
+ .menu-button:hover {
+    transform: scale(1.04);
+ }
+
+
+  .nav-section { padding: 0; }
+  .section-title {
+      padding: 0px 14px 2px;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: rgba(255,255,255,0.55);
+      font-weight: 600;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      margin-bottom: 2px;
+      margin-top: -4px;
+ }
+  .nav-item {
+    display: flex; align-items: center; gap: 14px;
+    padding: 10px 14px; color: white; text-decoration: none;
+    transition: all .22s; cursor: pointer; font-size: 14px;
+    border-left: 3px solid rgba(255,255,255,0.85);
+  }
+  .nav-item:hover {
+    background: rgba(255,255,255,0.06);
+    border-left: 3px solid rgba(255,255,255,0.42);
+    padding-left: 20px;
+  }
+  .nav-item.active { background: rgba(255,255,255,0.03); border-left: 3px solid white; }
+  .nav-icon { width:22px; text-align:center; font-size:16px; color:rgba(255,255,255,0.86); }
+  .nav-text { flex:1; font-weight:500; letter-spacing:0.6px; }
+  .nav-badge { font-size:10px; padding:4px 9px; border-radius:12px; font-weight:700; margin-left:6px; }
+  .nav-badge.free { background: linear-gradient(135deg,#3b82f6,#1d4ed8); color:white; }
+  .nav-badge.vip { background: linear-gradient(135deg, #facc15, #ca8a04); color:white; }
+  .nav-badge.danger { background: linear-gradient(135deg,#ef4444,#dc2626); color:white; }
+
+  .submenu {
+   background: linear-gradient(180deg, #05070a, #020617);
+   border-left:2px solid rgba(255,255,255,0.08);
+   margin-left:20px; display:none; overflow:hidden;
+   max-height:0; transition:max-height .34s; }
+  .submenu.active { display:block; max-height:800px; }
+  .submenu-item {
+    padding: 9px 14px 9px 36px;
+    color: rgba(255,255,255,0.95);
+    text-decoration: none; display:flex; align-items:center; justify-content:space-between;
+    font-size:14px; transition: all .18s; border-bottom:1px solid rgba(255,255,255,0.04);
+    opacity:0; transform: translateX(-8px); animation: slideIn .28s forwards;
+  }
+  .submenu-item:hover { background: rgba(255,255,255,0.04); padding-left: 44px; }
+  @keyframes slideIn { to { opacity:1; transform:translateX(0); } }
+
+  #sidebar-overlay {
+    position: fixed; top:0; left:0; width:100%; height:100%;
+    z-index:9998; display:none;
+  }
+  #sidebar-overlay.active { display:block; }
+
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: rgba(255,255,255,0.02); }
+  ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.18); border-radius:4px; }
+
+.vip-title {
+  color: #fde047;
+  font-weight: 700;
+  text-shadow:
+    0 0 4px rgba(253, 224, 71, 0.8),
+    0 0 8px rgba(253, 224, 71, 0.7),
+    0 0 16px rgba(253, 224, 71, 0.6),
+    0 0 24px rgba(253, 224, 71, 0.5);
+}
+
+</style>
+</head>
+<body>
+
+ <video autoplay muted loop id="bg-video">
+    <source src="https://files.catbox.moe/oz9ls2.mp4" type="video/mp4">
+  </video>
+
+<div id="top-bar">
+  <img src="https://i.imgur.com/YZIDMws.png" alt="logo">
+  <span>ÖZSOY PANEL</span>
+</div>
+
+
+
+  <button class="menu-button" onclick="toggleSidebar()">
+    <i class="fas fa-bars"></i>
+  </button>
+
+
+  <div id="sidebar-overlay" onclick="closeSidebar()"></div>
+
+
+  <aside id="sidebar">
+
+<div class="menu-header">
+    <div class="menu-image">
+        <img id="profile-img" src="https://i.imgur.com/OqOvO4X.jpeg" alt="Profil Resmi">
+        <input type="file" id="profile-input" accept="image/*">
+    </div>
+    <div class="profile-info">
+        <h2 id="profile-name">OzsoyBedava
+            <span class="verification"><span class="checkmark">&#10003;</span></span>
+        </h2>
+        <p>♡ Ücretsiz Üyelik</p>
+        <span class="status" id="status-text">Online</span>
+    </div>
+</div>
+
+    <div class="nav-section">
+      <div class="section-title">Ana Menü</div>
+
+      <a href="/panel" class="nav-item active">
+        <div class="nav-icon"><i class="fas fa-home"></i></div>
+        <div class="nav-text">Ana Sayfa</div>
+      </a>
+
+      <div class="nav-item" onclick="toggleSubmenu('quick-access')">
+        <div class="nav-icon"><i class="fas fa-bolt"></i></div>
+        <div class="nav-text">Hızlı Erişim</div>
+        <div class="nav-icon"><i class="fas fa-chevron-down"></i></div>
+      </div>
+
+      <div class="submenu" id="submenu-quick-access">
+        <a class="submenu-item" onclick="openSorgu('tc')"><span>TC Sorgulama</span><span class="nav-badge free">FREE</span></a>
+        <a class="submenu-item" onclick="openSorgu('adsoyad')"><span>Ad Soyad Sorgu</span><span class="nav-badge free">FREE</span></a>
+        <a class="submenu-item" onclick="openSorgu('yas')"><span>Yaş Sorgulama</span><span class="nav-badge free">FREE</span></a>
+        <a class="submenu-item" onclick="openSorgu('gsmtc')"><span>GSM → TC</span><span class="nav-badge vip">VIP</span></a>
+      </div>
+
+
+      <div class="nav-item" onclick="toggleSubmenu('all')">
+        <div class="nav-icon"><i class="fas fa-list"></i></div>
+        <div class="nav-text">Tüm Sorgular</div>
+        <div class="nav-icon"><i class="fas fa-chevron-down"></i></div>
+      </div>
+
+      <div class="submenu" id="submenu-all">
+
+        <a class="submenu-item" onclick="openSorgu('tc')"><span>TC Sorgulama</span><span class="nav-badge free">FREE</span></a>
+        <a class="submenu-item" onclick="openSorgu('tc2')"><span>TC Premium</span><span class="nav-badge vip">VIP</span></a>
+        <a class="submenu-item" onclick="openSorgu('adsoyad')"><span>Ad Soyad Sorgu</span><span class="nav-badge free">FREE</span></a>
+        <a class="submenu-item" onclick="openSorgu('adsoyadpro')"><span>Ad Soyad Pro</span><span class="nav-badge vip">VIP</span></a>
+        <a class="submenu-item" onclick="openSorgu('yas')"><span>Yaş Sorgulama</span><span class="nav-badge free">FREE</span></a>
+        <a class="submenu-item" onclick="openSorgu('burc')"><span>Burç Sorgulama</span><span class="nav-badge vip">VIP</span></a>
+
+        <a class="submenu-item" onclick="openSorgu('aile')"><span>Aile Sorgulama</span><span class="nav-badge vip">VIP</span></a>
+        <a class="submenu-item" onclick="openSorgu('ailepro')"><span>Aile Pro</span><span class="nav-badge vip">VIP</span></a>
+        <a class="submenu-item" onclick="openSorgu('es')"><span>Eş Sorgulama</span><span class="nav-badge vip">VIP</span></a>
+        <a class="submenu-item" onclick="openSorgu('cocuk')"><span>Çocuk Sorgulama</span><span class="nav-badge vip">VIP</span></a>
+        <a class="submenu-item" onclick="openSorgu('kardes')"><span>Kardeş Sorgulama</span><span class="nav-badge vip">VIP</span></a>
+
+        <a class="submenu-item" onclick="openSorgu('sulale')"><span>Sülale Sorgulama</span><span class="nav-badge vip">VIP</span></a>
+        <a class="submenu-item" onclick="openSorgu('soyagaci')"><span>Soyağacı</span><span class="nav-badge vip">VIP</span></a>
+        <a class="submenu-item" onclick="openSorgu('kuzen')"><span>Kuzen Sorgulama</span><span class="nav-badge vip">VIP</span></a>
+        <a class="submenu-item" onclick="openSorgu('yegen')"><span>Yeğen Sorgulama</span><span class="nav-badge vip">VIP</span></a>
+
+        <a class="submenu-item" onclick="openSorgu('adres')"><span>Adres Sorgulama</span><span class="nav-badge vip">VIP</span></a>
+        <a class="submenu-item" onclick="openSorgu('haneadres')"><span>Hane Adresi</span><span class="nav-badge vip">VIP</span></a>
+        <a class="submenu-item" onclick="openSorgu('adresvegsm')"><span>Adres & GSM</span><span class="nav-badge vip">VIP</span></a>
+
+        <a class="submenu-item" onclick="openSorgu('tcgsm')"><span>TC → GSM</span><span class="nav-badge vip">VIP</span></a>
+        <a class="submenu-item" onclick="openSorgu('gsmtc')"><span>GSM → TC</span><span class="nav-badge vip">VIP</span></a>
+        <a class="submenu-item" onclick="openSorgu('operator')"><span>Operatör Sorgu</span><span class="nav-badge vip">VIP</span></a>
+        <a class="submenu-item" onclick="openSorgu('tcvegsm')"><span>TC + GSM</span><span class="nav-badge vip">VIP</span></a>
+        <a class="submenu-item" onclick="openSorgu('tumiletisim')"><span>Tüm İletişim</span><span class="nav-badge vip">VIP</span></a>
+
+        <a class="submenu-item" onclick="openSorgu('profil')"><span>Profil Sorgulama</span><span class="nav-badge vip">VIP</span></a>
+        <a class="submenu-item" onclick="openSorgu('log')"><span>Log Sorgulama</span><span class="nav-badge vip">VIP</span></a>
+
+        <a class="submenu-item" onclick="openSorgu('cocuksayisi')"><span>Çocuk Sayısı</span><span class="nav-badge vip">VIP</span></a>
+        <a class="submenu-item" onclick="openSorgu('kardessayisi')"><span>Kardeş Sayısı</span><span class="nav-badge vip">VIP</span></a>
+        <a class="submenu-item" onclick="openSorgu('ailebuyuklugu')"><span>Aile Büyüklüğü</span><span class="nav-badge vip">VIP</span></a>
+      </div>
+    </div>
+
+    <div class="nav-section">
+      <div class="section-title">Ücretsiz API'ler</div>
+      <a class="nav-item" onclick="openSorgu('tc')">
+        <div class="nav-icon"><i class="fas fa-id-card"></i></div>
+        <div class="nav-text">TC Sorgulama</div>
+        <span class="nav-badge free">FREE</span>
+      </a>
+      <a class="nav-item" onclick="openSorgu('yas')">
+        <div class="nav-icon"><i class="fas fa-birthday-cake"></i></div>
+        <div class="nav-text">Yaş Sorgulama</div>
+        <span class="nav-badge free">FREE</span>
+      </a>
+      <a class="nav-item" onclick="openSorgu('adsoyad')">
+        <div class="nav-icon"><i class="fas fa-user"></i></div>
+        <div class="nav-text">Ad Soyad Sorgu</div>
+        <span class="nav-badge free">FREE</span>
+      </a>
+    </div>
+
+
+    <div class="nav-section">
+      <div class="section-title vip-title">VIP API'ler</div>
+
+      <div class="nav-item" onclick="toggleSubmenu('vip-tc')">
+        <div class="nav-icon"><i class="fas fa-star"></i></div>
+        <div class="nav-text">TC Premium</div>
+        <div class="nav-icon"><i class="fas fa-chevron-down"></i></div>
+      </div>
+      <div class="submenu" id="submenu-vip-tc">
+        <a class="submenu-item" onclick="openSorgu('tc2')"><span>TC2 Sorgulama</span><span class="nav-badge vip">VIP</span></a>
+        <a class="submenu-item" onclick="openSorgu('burc')"><span>Burç Sorgulama</span><span class="nav-badge vip">VIP</span></a>
+        <a class="submenu-item" onclick="openSorgu('profil')"><span>Profil Sorgulama</span><span class="nav-badge vip">VIP</span></a>
+        <a class="submenu-item" onclick="openSorgu('tcpro')"><span>TC Pro</span><span class="nav-badge vip">VIP</span></a>
+      </div>
+
+      <div class="nav-item" onclick="toggleSubmenu('vip-aile')">
+        <div class="nav-icon"><i class="fas fa-users"></i></div>
+        <div class="nav-text">Aile Sorguları</div>
+        <div class="nav-icon"><i class="fas fa-chevron-down"></i></div>
+      </div>
+      <div class="submenu" id="submenu-vip-aile">
+        <a class="submenu-item" onclick="openSorgu('aile')"><span>Aile Sorgulama</span><span class="nav-badge vip">VIP</span></a>
+        <a class="submenu-item" onclick="openSorgu('es')"><span>Eş Sorgulama</span><span class="nav-badge vip">VIP</span></a>
+        <a class="submenu-item" onclick="openSorgu('cocuk')"><span>Çocuk Sorgulama</span><span class="nav-badge vip">VIP</span></a>
+        <a class="submenu-item" onclick="openSorgu('kardes')"><span>Kardeş Sorgulama</span><span class="nav-badge vip">VIP</span></a>
+        <a class="submenu-item" onclick="openSorgu('anne')"><span>Anne</span><span class="nav-badge vip">VIP</span></a>
+        <a class="submenu-item" onclick="openSorgu('baba')"><span>Baba</span><span class="nav-badge vip">VIP</span></a>
+        <a class="submenu-item" onclick="openSorgu('ded')"><span>Dede</span><span class="nav-badge vip">VIP</span></a>
+        <a class="submenu-item" onclick="openSorgu('nine')"><span>Nine</span><span class="nav-badge vip">VIP</span></a>
+      </div>
+
+      <div class="nav-item" onclick="toggleSubmenu('vip-soy')">
+        <div class="nav-icon"><i class="fas fa-tree"></i></div>
+        <div class="nav-text">Soy Ağacı</div>
+        <div class="nav-icon"><i class="fas fa-chevron-down"></i></div>
+      </div>
+      <div class="submenu" id="submenu-vip-soy">
+        <a class="submenu-item" onclick="openSorgu('sulale')"><span>Sülale Sorgulama</span><span class="nav-badge vip">VIP</span></a>
+        <a class="submenu-item" onclick="openSorgu('soyagaci')"><span>Soyağacı</span><span class="nav-badge vip">VIP</span></a>
+        <a class="submenu-item" onclick="openSorgu('kuzen')"><span>Kuzen</span><span class="nav-badge vip">VIP</span></a>
+        <a class="submenu-item" onclick="openSorgu('yegen')"><span>Yeğen</span><span class="nav-badge vip">VIP</span></a>
+      </div>
+
+      <div class="nav-item" onclick="toggleSubmenu('vip-gsm')">
+        <div class="nav-icon"><i class="fas fa-phone"></i></div>
+        <div class="nav-text">GSM & İletişim</div>
+        <div class="nav-icon"><i class="fas fa-chevron-down"></i></div>
+      </div>
+      <div class="submenu" id="submenu-vip-gsm">
+        <a class="submenu-item" onclick="openSorgu('adres')"><span>Adres Sorgulama</span><span class="nav-badge vip">VIP</span></a>
+        <a class="submenu-item" onclick="openSorgu('haneadres')"><span>Hane Adresi</span><span class="nav-badge vip">VIP</span></a>
+        <a class="submenu-item" onclick="openSorgu('tcgsm')"><span>TC → GSM</span><span class="nav-badge vip">VIP</span></a>
+        <a class="submenu-item" onclick="openSorgu('gsmtc')"><span>GSM → TC</span><span class="nav-badge vip">VIP</span></a>
+        <a class="submenu-item" onclick="openSorgu('operator')"><span>Operatör Sorgu</span><span class="nav-badge vip">VIP</span></a>
+        <a class="submenu-item" onclick="openSorgu('tcvegsm')"><span>TC + GSM</span><span class="nav-badge vip">VIP</span></a>
+        <a class="submenu-item" onclick="openSorgu('tumiletisim')"><span>Tüm İletişim</span><span class="nav-badge vip">VIP</span></a>
+      </div>
+
+
+      <div class="nav-item" onclick="toggleSubmenu('vip-sizma')">
+        <div class="nav-icon"><i class="fas fa-skull-crossbones"></i></div>
+        <div class="nav-text">Sızma İşlemleri</div>
+        <div class="nav-icon"><i class="fas fa-chevron-down"></i></div>
+      </div>
+      <div class="submenu" id="submenu-vip-sizma">
+        <a class="submenu-item" onclick="openSorgu('instagram')"><span>Instagram Çalma</span><span class="nav-badge danger">SIZMA</span></a>
+        <a class="submenu-item" onclick="openSorgu('facebook')"><span>Facebook Çalma</span><span class="nav-badge danger">SIZMA</span></a>
+        <a class="submenu-item" onclick="openSorgu('netflix')"><span>Netflix Çalma</span><span class="nav-badge danger">SIZMA</span></a>
+        <a class="submenu-item" onclick="openSorgu('tiktok')"><span>TikTok Çalma</span><span class="nav-badge danger">SIZMA</span></a>
+        <a class="submenu-item" onclick="openSorgu('twitter')"><span>Twitter Çalma</span><span class="nav-badge danger">SIZMA</span></a>
+        <a class="submenu-item" onclick="openSorgu('google')"><span>Google Çalma</span><span class="nav-badge danger">SIZMA</span></a>
+        <a class="submenu-item" onclick="openSorgu('microsoft')"><span>Microsoft Çalma</span><span class="nav-badge danger">SIZMA</span></a>
+        <a class="submenu-item" onclick="openSorgu('spotify')"><span>Spotify Çalma</span><span class="nav-badge danger">SIZMA</span></a>
+      </div>
+
+      <div class="nav-item" onclick="toggleSubmenu('vip-other')">
+        <div class="nav-icon"><i class="fas fa-cogs"></i></div>
+        <div class="nav-text">Diğer Premium</div>
+        <div class="nav-icon"><i class="fas fa-chevron-down"></i></div>
+      </div>
+      <div class="submenu" id="submenu-vip-other">
+        <a class="submenu-item" onclick="openSorgu('adsoyadpro')"><span>Ad Soyad Pro</span><span class="nav-badge vip">VIP</span></a>
+        <a class="submenu-item" onclick="openSorgu('log')"><span>Log Sorgulama</span><span class="nav-badge vip">VIP</span></a>
+        <a class="submenu-item" onclick="openSorgu('cocuksayisi')"><span>Çocuk Sayısı</span><span class="nav-badge vip">VIP</span></a>
+        <a class="submenu-item" onclick="openSorgu('kardessayisi')"><span>Kardeş Sayısı</span><span class="nav-badge vip">VIP</span></a>
+        <a class="submenu-item" onclick="openSorgu('ailebuyuklugu')"><span>Aile Büyüklüğü</span><span class="nav-badge vip">VIP</span></a>
+        <a class="submenu-item" onclick="openSorgu('adresvegsm')"><span>Adres ve GSM</span><span class="nav-badge vip">VIP</span></a>
+      </div>
+    </div>
+
+
+     <div class="nav-section">
+     <div class="section-title">Hesap</div>
+
+     <a class="nav-item" onclick="openMarket()">
+       <div class="nav-icon"><i class="fas fa-crown"></i></div>
+       <div class="nav-text">VIP Yükselt</div>
+       <span class="nav-badge vip">YÜKSELT</span>
+     </a>
+
+     <a class="nav-item" onclick="logout()">
+       <div class="nav-icon"><i class="fas fa-sign-out-alt"></i></div>
+       <div class="nav-text">Çıkış Yap</div>
+     </a>
+    </div>
+  </aside>
+
+<script>
+
+
+let db;
+const request = indexedDB.open("profileDB", 1);
+
+request.onerror = (e) => console.error("DB açma hatası", e);
+request.onsuccess = (e) => {
+    db = e.target.result;
+    loadProfile();
+};
+
+request.onupgradeneeded = (e) => {
+    db = e.target.result;
+    db.createObjectStore("profileStore", { keyPath: "id" });
+};
+
+const profileImg = document.getElementById('profile-img');
+const profileInput = document.getElementById('profile-input');
+
+profileImg.addEventListener('click', () => profileInput.click());
+
+profileInput.addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if(file){
+        const reader = new FileReader();
+        reader.onload = function(event){
+            profileImg.src = event.target.result;
+            saveProfile(event.target.result);
+        }
+        reader.readAsDataURL(file);
+    }
+});
+
+function saveProfile(dataURL){
+    const transaction = db.transaction(["profileStore"], "readwrite");
+    const store = transaction.objectStore("profileStore");
+    store.put({ id: "profileImage", data: dataURL });
+}
+
+function loadProfile(){
+    const transaction = db.transaction(["profileStore"], "readonly");
+    const store = transaction.objectStore("profileStore");
+    const getRequest = store.get("profileImage");
+    getRequest.onsuccess = function(e){
+        if(e.target.result){
+            profileImg.src = e.target.result.data;
+        }
+    }
+}
+
+
+
+  function toggleSidebar() {
+    document.getElementById('sidebar').classList.toggle('active');
+    document.getElementById('sidebar-overlay').classList.toggle('active');
+  }
+  function closeSidebar() {
+    document.getElementById('sidebar').classList.remove('active');
+    document.getElementById('sidebar-overlay').classList.remove('active');
+  }
+
+  function toggleSubmenu(id) {
+    const submenu = document.getElementById('submenu-' + id);
+    if (!submenu) return;
+    const isActive = submenu.classList.contains('active');
+
+    document.querySelectorAll('.submenu.active').forEach(sm => {
+      if (sm !== submenu) {
+        sm.classList.remove('active');
+        sm.style.maxHeight = '0';
+        const parentBtn = document.querySelector(`[onclick*="${sm.id.replace('submenu-', '')}"]`);
+        if (parentBtn) {
+          const chevron = parentBtn.querySelector('.fa-chevron-down');
+          if (chevron) chevron.style.transform = 'rotate(0deg)';
+        }
+      }
+    });
+
+    if (isActive) {
+      submenu.classList.remove('active');
+      submenu.style.maxHeight = '0';
+    } else {
+      submenu.classList.add('active');
+      submenu.style.maxHeight = submenu.scrollHeight + 'px';
+    }
+
+    const parent = document.querySelector(`[onclick="toggleSubmenu('${id}')"]`);
+    if (parent) {
+      const chevron = parent.querySelector('.fa-chevron-down');
+      if (chevron) chevron.style.transform = !isActive ? 'rotate(180deg)' : 'rotate(0deg)';
+    }
+  }
+
+  function openSorgu(apiName) {
+    console.log('Açılıyor:', apiName);
+    window.location.href = `/sorgu.html?api=${encodeURIComponent(apiName)}`;
+  }
+  function openMarket(){ window.location.href = '/abonelik.html'; }
+  function logout(){ if(confirm('Çıkış yapmak istediğinize emin misiniz?')) window.location.href = '/logout'; }
+
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeSidebar(); });
+  document.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('sidebar-overlay').addEventListener('click', () => {
+      closeSidebar();
+      document.querySelectorAll('.submenu.active').forEach(sm => { sm.classList.remove('active'); sm.style.maxHeight = '0'; });
+    });
+  });
+</script>
+</body>
