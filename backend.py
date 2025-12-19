@@ -894,12 +894,11 @@ def api_sorgu():
     user_tracker.track_api_call(g.client_ip, api_id)
     
     try:
-        # Gelişmiş headers ile API isteği
+        # Headers
         headers = {
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
             'Accept': 'application/json, text/plain, */*',
             'Accept-Language': 'tr-TR,tr;q=0.9,en-US;q=0.8,en;q=0.7',
-            'Accept-Encoding': 'gzip, deflate, br',
             'Connection': 'keep-alive',
             'Cache-Control': 'no-cache',
             'Pragma': 'no-cache',
@@ -908,60 +907,97 @@ def api_sorgu():
             'X-Requested-With': 'XMLHttpRequest'
         }
         
+        # GZIP decode olmadan istek yap
         response = requests.get(filled_endpoint, headers=headers, timeout=30)
         
         log_audit("API çağrısı", f"API: {api_id}, Status: {response.status_code}", key.id)
         
         if response.status_code == 200:
-            try:
-                # Content encoding kontrolü
-                content = response.content
-                
-                # Gzip decode etmeyi dene
-                if response.headers.get('Content-Encoding') == 'gzip':
-                    import gzip
-                    import io
-                    with gzip.GzipFile(fileobj=io.BytesIO(content)) as f:
-                        content = f.read()
-                elif response.headers.get('Content-Encoding') == 'deflate':
-                    import zlib
-                    content = zlib.decompress(content)
-                
-                # String'e çevir
-                if isinstance(content, bytes):
-                    try:
-                        content_str = content.decode('utf-8')
-                    except UnicodeDecodeError:
-                        try:
-                            content_str = content.decode('iso-8859-9')
-                        except UnicodeDecodeError:
-                            content_str = content.decode('utf-8', errors='replace')
-                
-                # Türkçe karakterleri düzelt
-                content_str = content_str.replace('Ã§', 'ç').replace('Ã‡', 'Ç')
-                content_str = content_str.replace('ÄŸ', 'ğ').replace('Äž', 'Ğ')
-                content_str = content_str.replace('Ã¶', 'ö').replace('Ã–', 'Ö')
-                content_str = content_str.replace('ÅŸ', 'ş').replace('Åž', 'Ş')
-                content_str = content_str.replace('Ã¼', 'ü').replace('Ãœ', 'Ü')
-                content_str = content_str.replace('Ä±', 'ı').replace('Ä°', 'İ')
-                
-                # JSON'a çevirmeye çalış
+            # Content-Type kontrolü
+            content_type = response.headers.get('Content-Type', '').lower()
+            
+            # Eğer JSON ise
+            if 'application/json' in content_type or 'json' in content_type:
                 try:
-                    result_data = json.loads(content_str)
+                    result_data = response.json()
                     return jsonify({'success': True, 'data': result_data})
-                except json.JSONDecodeError:
-                    # JSON değilse temizle ve text olarak döndür
-                    cleaned_text = content_str.strip()
-                    return jsonify({'success': True, 'data': cleaned_text})
+                except:
+                    pass
+            
+            # Eğer HTML ise
+            if 'text/html' in content_type or 'html' in content_type:
+                try:
+                    # HTML'i parse etmeyi dene
+                    from bs4 import BeautifulSoup
+                    soup = BeautifulSoup(response.content, 'html.parser')
+                    # Script ve style etiketlerini temizle
+                    for script in soup(["script", "style"]):
+                        script.decompose()
+                    text = soup.get_text()
+                    lines = (line.strip() for line in text.splitlines())
+                    chunks = (phrase.strip() for line in lines for phrase in line.split("  "))
+                    text = '\n'.join(chunk for chunk in chunks if chunk)
+                    return jsonify({'success': True, 'data': text[:5000]})
+                except:
+                    pass
+            
+            # Eğer plain text ise
+            if 'text/plain' in content_type or 'text/' in content_type:
+                try:
+                    # Farklı encoding'ler dene
+                    encodings = ['utf-8', 'iso-8859-9', 'windows-1254', 'ascii']
+                    text = None
+                    for encoding in encodings:
+                        try:
+                            text = response.content.decode(encoding, errors='replace')
+                            break
+                        except:
+                            continue
                     
-            except Exception as parse_error:
-                log_audit("API parse hatası", f"API: {api_id}, Hata: {str(parse_error)}", key.id)
-                return jsonify({'success': False, 'error': f'API yanıtı parse edilemedi: {str(parse_error)}'}), 500
+                    if text:
+                        # Türkçe karakter düzeltme
+                        replacements = {
+                            'Ã§': 'ç', 'Ã‡': 'Ç',
+                            'ÄŸ': 'ğ', 'Äž': 'Ğ',
+                            'Ã¶': 'ö', 'Ã–': 'Ö',
+                            'ÅŸ': 'ş', 'Åž': 'Ş',
+                            'Ã¼': 'ü', 'Ãœ': 'Ü',
+                            'Ä±': 'ı', 'Ä°': 'İ',
+                            'â€': '-', 'â€™': "'",
+                            'â€œ': '"', 'â€': '"',
+                            'â€˜': "'", 'â€¦': '...'
+                        }
+                        
+                        for wrong, correct in replacements.items():
+                            text = text.replace(wrong, correct)
+                        
+                        return jsonify({'success': True, 'data': text[:5000]})
+                except:
+                    pass
+            
+            # Hiçbiri çalışmazsa binary olarak göster
+            try:
+                # Hex formatına çevir
+                hex_data = response.content.hex()
+                # İlk 1000 karakter göster
+                return jsonify({
+                    'success': True, 
+                    'data': f"Binary veri alındı (hex, {len(response.content)} bytes). İlk 1000 karakter: {hex_data[:1000]}...",
+                    'raw_hex': hex_data,
+                    'size_bytes': len(response.content),
+                    'content_type': content_type
+                })
+            except:
+                return jsonify({
+                    'success': True, 
+                    'data': f"Raw veri alındı ({len(response.content)} bytes)",
+                    'size': len(response.content)
+                })
         else:
             return jsonify({
                 'success': False,
                 'error': f'API hatası: {response.status_code}',
-                'response': response.text[:500]
+                'response': response.text[:500] if response.text else 'No response text'
             }), response.status_code
     except requests.Timeout:
         log_audit("API timeout", f"API: {api_id}", key.id)
@@ -972,7 +1008,6 @@ def api_sorgu():
     except requests.RequestException as e:
         log_audit("API hatası", f"API: {api_id}, Hata: {str(e)}", key.id)
         return jsonify({'success': False, 'error': f'İstek hatası: {str(e)}'}), 500
-
 # ----------------------------------------------------------------------------
 # KEY OLUŞTURMA API - GÜVENLIKLI
 # ----------------------------------------------------------------------------
